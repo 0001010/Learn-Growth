@@ -44,8 +44,7 @@ def crawling(station_code):
                  'times' : times, 
                  'weeks' : weeks, 
                  'destinations' : destinations}
-    data_full = json.dumps(data_full, indent = 4, ensure_ascii = False)
-    
-    return data_full
+
+    return json.dumps(data_full, indent = 4, ensure_ascii = False)
 
 # 신창: 1408
