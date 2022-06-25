@@ -18,7 +18,7 @@ def crawling(station_code):
     filter_data = soup.find_all('a')
     filter_data2 = soup.find_all('li')
 
-    types = [] # 급행인지 일반인지(G: 일반, D: 급행)
+    types = [] # 급행인지 일반인지(일반, 급행)
     times = [] # 시간(시:분) 
     weeks = [] # 1: 평일, 2: 주말, 3: 공휴일
     destinations = [] # 도착지(ex. 청량리행, 천안행, 구로행 등)
@@ -28,23 +28,36 @@ def crawling(station_code):
         try:
             strings = i.get_text().split()
             times.append(i['time'] + ':' + strings[0][:-1])
-            weeks.append(i['week'])
+            
+            if i['week'] == '1':
+                weeks.append('평일')
+            elif i['week'] == '2':
+                weeks.append('주말')
+            else:
+                weeks.append('공휴일')
+                
             destinations.append(strings[-1][:-1])
+            
         except:
             continue
 
     for j in filter_data2:
         try:
-            if j['class'][0]=='G' or j['class'][0]=='D':
-                types.extend(j['class'])
+            if j['class'][0]=='G':
+                types.append('일반')
+            elif j['class'][0]=='D':
+                types.append('급행')
         except:
             continue
+    
         
     data_full = {'types' : types, 
                  'times' : times, 
                  'weeks' : weeks, 
                  'destinations' : destinations}
+    
+    data_full_json = json.dumps(data_full, indent = 4, ensure_ascii = False)
 
-    return json.dumps(data_full, indent = 4, ensure_ascii = False)
+    return data_full_json
 
-# 신창: 1408
+# 신창역 코드: 1408
