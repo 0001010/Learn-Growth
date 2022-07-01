@@ -50,14 +50,57 @@ def crawling(station_code):
         except:
             continue
     
+
+    return types, times, weeks, destinations
+
+def real_time_subway_location(location):
+    url = 'http://swopenAPI.seoul.go.kr/api/subway/544f6a5a766b6b73313036426657754f/json/realtimeStationArrival/0/10/' + location
+
+    response = requests.get(url)
+    src = response.text
+    src_json  = json.loads(src)
+
+    updnline = [] # 상행, 하행
+    bstatnNm = [] # 도착역
+    cur_loc = [] # 현재 위치
+    cur_loc2 = []
+    arvlCd = []
+
+
+    for row in src_json['realtimeArrivalList']:
+        updnline.append(row['updnLine'])
+        bstatnNm.append(row['bstatnNm'])
+        cur_loc2.append(row['arvlMsg2'])
+        cur_loc.append(row['arvlMsg3'])
+        arvlCd.append(row['arvlCd'])
         
-    data_full = {'types' : types, 
-                 'times' : times, 
-                 'weeks' : weeks, 
-                 'destinations' : destinations}
+    return updnline, bstatnNm, cur_loc, arvlCd
+
+
+def main():
+    crawling_data = crawling(1408)
+    api_data = real_time_subway_location('신창')
     
-    data_full_json = json.dumps(data_full, indent = 4, ensure_ascii = False)
+    crawling_data_json = {
+        'types' : crawling_data[0],
+        'times' : crawling_data[1],
+        'weeks' : crawling_data[2],
+        'destinations' : crawling_data[3]
+        }
+    
+    api_data_json = {
+        'updnline' : api_data[0],
+        'bstatnNm' : api_data[1],
+        'cur_loc' : api_data[2],
+        'arvlCd' : api_data[3]
+        }
+    
+    crawling_data_json = json.dumps(crawling_data_json, indent = 4, ensure_ascii = False)
+    api_data_json = json.dumps(api_data_json, indent = 4, ensure_ascii = False)
+    
+    return crawling_data_json, api_data_json
 
-    return data_full_json
 
+if __name__ == "__main__":
+    main()
 # 신창역 코드: 1408
