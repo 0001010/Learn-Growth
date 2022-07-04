@@ -63,14 +63,12 @@ def real_time_subway_location(location):
     updnline = [] # 상행, 하행
     bstatnNm = [] # 도착역
     cur_loc = [] # 현재 위치
-    cur_loc2 = []
-    arvlCd = []
+    arvlCd = [] # 현재 열차의 상태(0:진입, 1:도착, 2:출발, 3:전역출발, 4:전역진입, 5:전역도착, 99:운행중)
 
 
     for row in src_json['realtimeArrivalList']:
         updnline.append(row['updnLine'])
         bstatnNm.append(row['bstatnNm'])
-        cur_loc2.append(row['arvlMsg2'])
         cur_loc.append(row['arvlMsg3'])
         arvlCd.append(row['arvlCd'])
         
@@ -102,5 +100,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main_json = main()
 # 신창역 코드: 1408
